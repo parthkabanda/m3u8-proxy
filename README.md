@@ -1,5 +1,7 @@
 # m3u8-proxy
 
+Join the [discord](https://discord.gg/88ArBFRcY8) for support
+
 `m3u8-proxy` is a TypeScript-based proxy server that serves M3U8 playlist files. It is designed to be lightweight, easy to deploy, and efficient for streaming purposes.
 
 # List of free instances

@@ -1,6 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 
 import indexRouter from './routes/index.ts';
 import proxyRouter from './routes/fetch.ts';
@@ -8,6 +9,14 @@ import proxyRouter from './routes/fetch.ts';
 const app = express();
 
 app.use(express.json());
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 2000,
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+});
+
+app.use(limiter);
 
 app.use(cors({
   origin: '*',
@@ -19,7 +28,7 @@ app.use(cors({
 app.use(morgan('combined'));
 
 app.use('/', indexRouter);
-// had to rename as my host does not support proxy as a route
+
 app.use('/fetch', proxyRouter);
 
 const PORT = process.env.PORT || 3000;

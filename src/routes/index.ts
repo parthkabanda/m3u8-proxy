@@ -22,7 +22,16 @@ router.get('/', (req: Request, res: Response) => {
           url: 'The URL of the video or image.',
           ref: 'The referrer URL'
         },
-        note: "Please use this to fetch m3u8 files and images, it doesn't really work for whole websites."
+        note: "no note"
+      },
+      {
+        method: 'GET',
+        usage: '/fetch/image',
+        description: 'Fetch an image from a URL',
+        query: {
+          url: 'The URL of the image.',
+          ref: 'The referrer URL'
+        }
       },
       {
         method: 'GET',

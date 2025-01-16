@@ -56,9 +56,10 @@ function verifySignedUrl(
  * - Example route for fetching a remote M3U8
  *   based on ?url=<some-remote-m3u8>.
  * - Rewrites all lines that do *not* start with '#' (resources) to a signed local URL.
+ * - Ref parameter is optional and can be used to set the Referer header.
  */
 router.get('/', async (req: Request, res: Response) => {
-  const { url } = req.query;
+  const { url, ref } = req.query;
 
   if (!url || typeof url !== 'string') {
     return res.status(400).json({ error: 'No URL provided' });
@@ -67,7 +68,13 @@ router.get('/', async (req: Request, res: Response) => {
   try {
     debug(`Fetching M3U8 file from: ${url}`);
 
-    const response = await axios.get(url, { responseType: 'text' });
+    const headers: Record<string, string> = {};
+    if (ref && typeof ref === 'string') {
+      headers['Referer'] = ref;
+    }
+
+    const response = await axios.get(url, { responseType: 'text', headers });
+
     let m3u8Content = response.data as string;
 
     if (!m3u8Content.startsWith('#EXTM3U')) {
@@ -143,6 +150,32 @@ router.get('/segment/resource', async (req: Request, res: Response) => {
     debug(`Failed to fetch resource: ${(error as Error).message}`);
     res.status(500).json({ error: 'Error fetching segment content' });
   }
+});
+
+router.get('/image', async (req: Request, res: Response) => {
+    const { url, ref } = req.query;
+    if (!url || typeof url !== 'string') {
+        return res.status(400).json({ error: 'No URL provided' });
+    }
+
+    try {
+        debug(`Fetching image from: ${url}`);
+
+        const headers: Record<string, string> = {};
+        if (ref && typeof ref === 'string') {
+            headers['Referer'] = ref;
+        }
+
+        const response = await axios.get(url, { responseType: 'arraybuffer', headers });
+
+        const contentType = response.headers['content-type'];
+        res.setHeader('Content-Type', contentType);
+        res.send(response.data);
+        debug('Image served successfully');
+    } catch (error) {
+        debug(`Failed to fetch image: ${(error as Error).message}`);
+        res.status(500).json({ error: 'Error fetching image content' });
+    }
 });
 
 export default router;

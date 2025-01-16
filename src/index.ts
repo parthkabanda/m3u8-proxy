@@ -1,7 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
-import rateLimit from 'express-rate-limit';
 
 import indexRouter from './routes/index.ts';
 import proxyRouter from './routes/fetch.ts';
@@ -10,13 +9,7 @@ const app = express();
 
 app.use(express.json());
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 2000,
-  message: 'Too many requests from this IP, please try again after 15 minutes',
-});
-
-app.use(limiter);
+app.set('trust proxy', true); // this is for if you're behind a load balancer or a reverse proxy
 
 app.use(cors({
   origin: '*',

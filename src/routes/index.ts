@@ -9,11 +9,10 @@ router.use((req, res, next) => {
   next();
 });
 
-
 router.get('/', (req: Request, res: Response) => {
   res.json(
   { 
-    message: 'NekoProxyV2 is ready🎉',
+    message: 'NekoProxy is ready🎉',
     endpoints: [
       {
         method: 'GET',

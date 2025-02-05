@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: simple-proxy
+    name: pkb-player
     env: standard
     buildCommand: bun install
     startCommand: bun start
